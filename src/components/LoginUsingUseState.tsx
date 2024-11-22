@@ -14,6 +14,11 @@ export default function Login() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(formData);
+
+    setFormData({
+      email: '',
+      password: '',
+    });
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

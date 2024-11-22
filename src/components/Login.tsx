@@ -10,6 +10,8 @@ export default function Login() {
       email: emailRef.current?.value,
       password: passwordRef.current?.value,
     });
+
+    event.currentTarget.reset();
   };
 
   return (
