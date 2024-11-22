@@ -1,4 +1,5 @@
 import { ChangeEvent, FocusEvent, FormEvent, useState } from 'react';
+import Input from './Input';
 
 interface FormFields {
   email: string;
@@ -22,6 +23,9 @@ export default function Login() {
   });
 
   const emailIsInvalid = didEdit.email && !formData.email.includes('@');
+
+  const passwordIsInvalid =
+    didEdit.email && formData.password.trim().length < 6;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -57,31 +61,28 @@ export default function Login() {
       <h2>Login</h2>
 
       <div className="control-row">
-        <div className="control no-margin">
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            value={formData?.email}
-            onBlur={handleLostFocus}
-            onChange={handleChange}
-          />
-          <div className="control-error">
-            {emailIsInvalid && <p>Please enter a valid email address.</p>}
-          </div>
-        </div>
-
-        <div className="control no-margin">
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            value={formData?.password}
-            onChange={handleChange}
-          />
-        </div>
+        <Input
+          id="email"
+          label="Email"
+          type="email"
+          name="email"
+          value={formData?.email}
+          onBlur={handleLostFocus}
+          onChange={handleChange}
+          isValid={!emailIsInvalid}
+          errorValidationMessage="Please enter a valid email address."
+        />
+        <Input
+          id="password"
+          label="Password"
+          type="password"
+          name="password"
+          value={formData?.password}
+          onChange={handleChange}
+          onBlur={handleLostFocus}
+          isValid={!passwordIsInvalid}
+          errorValidationMessage="Please enter a password with 6 or more characters."
+        />
       </div>
 
       <p className="form-actions">
