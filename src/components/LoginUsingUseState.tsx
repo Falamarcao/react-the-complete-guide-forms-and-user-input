@@ -1,5 +1,6 @@
 import { ChangeEvent, FocusEvent, FormEvent, useState } from 'react';
 import Input from './Input';
+import { hasMinLength, isEmail, isNotEmpty } from '../util/validation';
 
 interface FormFields {
   email: string;
@@ -22,10 +23,12 @@ export default function Login() {
     password: false,
   });
 
-  const emailIsInvalid = didEdit.email && !formData.email.includes('@');
+  const emailIsInvalid =
+    didEdit.email &&
+    !(isEmail(formData.email) && isNotEmpty(formData.password));
 
   const passwordIsInvalid =
-    didEdit.email && formData.password.trim().length < 6;
+    didEdit.password && !hasMinLength(formData.password, 6);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -69,7 +72,7 @@ export default function Login() {
           value={formData?.email}
           onBlur={handleLostFocus}
           onChange={handleChange}
-          isValid={!emailIsInvalid}
+          isInvalid={emailIsInvalid}
           errorValidationMessage="Please enter a valid email address."
         />
         <Input
@@ -80,7 +83,7 @@ export default function Login() {
           value={formData?.password}
           onChange={handleChange}
           onBlur={handleLostFocus}
-          isValid={!passwordIsInvalid}
+          isInvalid={passwordIsInvalid}
           errorValidationMessage="Please enter a password with 6 or more characters."
         />
       </div>
