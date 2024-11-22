@@ -44,6 +44,7 @@ export default function Signup() {
             type="password"
             name="confirm-password"
             required
+            minLength={6}
           />
         </div>
       </div>
