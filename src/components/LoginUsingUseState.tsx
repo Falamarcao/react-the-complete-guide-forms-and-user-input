@@ -1,15 +1,26 @@
-import { FormEvent, useRef } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
+
+interface FormData {
+  email: string;
+  password: string;
+}
 
 export default function Login() {
-  const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
+  const [formData, setFormData] = useState<FormData>({
+    email: '',
+    password: '',
+  });
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log({
-      email: emailRef.current?.value,
-      password: passwordRef.current?.value,
-    });
+    console.log(formData);
+  };
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setFormData((formData) => ({
+      ...formData,
+      [event.target.id]: event.target.value,
+    }));
   };
 
   return (
@@ -19,7 +30,13 @@ export default function Login() {
       <div className="control-row">
         <div className="control no-margin">
           <label htmlFor="email">Email</label>
-          <input id="email" type="email" name="email" ref={emailRef} />
+          <input
+            id="email"
+            type="email"
+            name="email"
+            value={formData?.email}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="control no-margin">
@@ -28,7 +45,8 @@ export default function Login() {
             id="password"
             type="password"
             name="password"
-            ref={passwordRef}
+            value={formData?.password}
+            onChange={handleChange}
           />
         </div>
       </div>
