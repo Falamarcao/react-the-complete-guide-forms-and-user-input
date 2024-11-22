@@ -1,15 +1,22 @@
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 
 export default function Signup() {
+  const [passwordIsValid, setPasswordIsValid] = useState<boolean>(true);
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
 
-    const data = {
+    const data: Record<string, FormDataEntryValue | FormDataEntryValue[]> = {
       ...Object.fromEntries(formData.entries()),
       acquisition: formData.getAll('acquisition'),
     };
+
+    if (data.password !== data['confirm-password']) {
+      setPasswordIsValid(false);
+      return;
+    }
 
     console.log(data);
     // event.currentTarget.reset();
@@ -46,6 +53,9 @@ export default function Signup() {
             required
             minLength={6}
           />
+          <div className="control-error">
+            {!passwordIsValid && <p>Passwords must match.</p>}
+          </div>
         </div>
       </div>
 
