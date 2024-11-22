@@ -11,6 +11,8 @@ export default function Login() {
     password: '',
   });
 
+  const emailIsInvalid = formData.email !== '' && !formData.email.includes('@');
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(formData);
@@ -42,6 +44,9 @@ export default function Login() {
             value={formData?.email}
             onChange={handleChange}
           />
+          <div className="control-error">
+            {emailIsInvalid && <p>Please enter a valid email address.</p>}
+          </div>
         </div>
 
         <div className="control no-margin">

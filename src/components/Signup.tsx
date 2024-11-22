@@ -12,7 +12,7 @@ export default function Signup() {
     };
 
     console.log(data);
-    event.currentTarget.reset();
+    // event.currentTarget.reset();
   };
 
   return (
