@@ -1,17 +1,27 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FocusEvent, FormEvent, useState } from 'react';
 
-interface FormData {
+interface FormFields {
   email: string;
   password: string;
 }
 
+interface FormFieldsBoolean {
+  email: boolean;
+  password: boolean;
+}
+
 export default function Login() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<FormFields>({
     email: '',
     password: '',
   });
 
-  const emailIsInvalid = formData.email !== '' && !formData.email.includes('@');
+  const [didEdit, setDidEdit] = useState<FormFieldsBoolean>({
+    email: false,
+    password: false,
+  });
+
+  const emailIsInvalid = didEdit.email && !formData.email.includes('@');
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -28,6 +38,18 @@ export default function Login() {
       ...formData,
       [event.target.id]: event.target.value,
     }));
+
+    setDidEdit((prevDidEdit) => ({
+      ...prevDidEdit,
+      [event.target.id]: false,
+    }));
+  };
+
+  const handleLostFocus = (event: FocusEvent<HTMLInputElement>) => {
+    setDidEdit((prevDidEdit) => ({
+      ...prevDidEdit,
+      [event.target.id]: true,
+    }));
   };
 
   return (
@@ -42,6 +64,7 @@ export default function Login() {
             type="email"
             name="email"
             value={formData?.email}
+            onBlur={handleLostFocus}
             onChange={handleChange}
           />
           <div className="control-error">
