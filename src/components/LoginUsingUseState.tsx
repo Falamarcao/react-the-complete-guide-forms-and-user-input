@@ -1,62 +1,37 @@
-import { ChangeEvent, FocusEvent, FormEvent, useState } from 'react';
+import { FormEvent } from 'react';
+
 import Input from './Input';
+
+import useInput from '../hooks/useInput';
+
 import { hasMinLength, isEmail, isNotEmpty } from '../util/validation';
 
-interface FormFields {
-  email: string;
-  password: string;
-}
-
-interface FormFieldsBoolean {
-  email: boolean;
-  password: boolean;
-}
-
 export default function Login() {
-  const [formData, setFormData] = useState<FormFields>({
-    email: '',
-    password: '',
-  });
+  const {
+    value: email,
+    handleChange: handleEmailChange,
+    handleLostFocus: handleEmailLostFocus,
+    hasError: emailHasError,
+    reset: resetEmail,
+  } = useInput('', (value) => isEmail(value) && isNotEmpty(value));
 
-  const [didEdit, setDidEdit] = useState<FormFieldsBoolean>({
-    email: false,
-    password: false,
-  });
-
-  const emailIsInvalid =
-    didEdit.email &&
-    !(isEmail(formData.email) && isNotEmpty(formData.password));
-
-  const passwordIsInvalid =
-    didEdit.password && !hasMinLength(formData.password, 6);
+  const {
+    value: password,
+    handleChange: handlePasswordChange,
+    handleLostFocus: handlePasswordLostFocus,
+    hasError: passwordHasError,
+    reset: resetPassword,
+  } = useInput('', (value) => hasMinLength(value, 6));
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(formData);
 
-    setFormData({
-      email: '',
-      password: '',
-    });
-  };
+    if (emailHasError || passwordHasError) return;
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFormData((formData) => ({
-      ...formData,
-      [event.target.id]: event.target.value,
-    }));
+    console.log({ email: email, password: password });
 
-    setDidEdit((prevDidEdit) => ({
-      ...prevDidEdit,
-      [event.target.id]: false,
-    }));
-  };
-
-  const handleLostFocus = (event: FocusEvent<HTMLInputElement>) => {
-    setDidEdit((prevDidEdit) => ({
-      ...prevDidEdit,
-      [event.target.id]: true,
-    }));
+    resetEmail();
+    resetPassword();
   };
 
   return (
@@ -69,10 +44,10 @@ export default function Login() {
           label="Email"
           type="email"
           name="email"
-          value={formData?.email}
-          onBlur={handleLostFocus}
-          onChange={handleChange}
-          isInvalid={emailIsInvalid}
+          value={email}
+          onBlur={handleEmailLostFocus}
+          onChange={handleEmailChange}
+          isInvalid={emailHasError}
           errorValidationMessage="Please enter a valid email address."
         />
         <Input
@@ -80,17 +55,17 @@ export default function Login() {
           label="Password"
           type="password"
           name="password"
-          value={formData?.password}
-          onChange={handleChange}
-          onBlur={handleLostFocus}
-          isInvalid={passwordIsInvalid}
+          value={password}
+          onChange={handlePasswordChange}
+          onBlur={handlePasswordLostFocus}
+          isInvalid={passwordHasError}
           errorValidationMessage="Please enter a password with 6 or more characters."
         />
       </div>
 
       <p className="form-actions">
         {/* type="button" make the button not submit the form. default is type="submit" */}
-        <button type="button" className="button button-flat">
+        <button type="reset" className="button button-flat">
           Reset
         </button>
         <button className="button">Login</button>
